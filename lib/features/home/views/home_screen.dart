@@ -5,14 +5,13 @@ import 'package:store_app/features/home/cubit/product_states.dart';
 import 'package:store_app/features/home/widgets/product_item.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key, required this.name});
-  final String name;
+  const HomeScreen({super.key});
+  
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ProdcutCubit()..getAllProducts(),
       child: Scaffold(
-        appBar: AppBar(title: Text(name)),
         body: BlocConsumer<ProdcutCubit, ProductStates>(
           listener: (context, state) {},
           builder: (context, state) {

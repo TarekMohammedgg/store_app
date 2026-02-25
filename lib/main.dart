@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:store_app/core/routing/app_route.dart';
+import 'package:store_app/core/routing/routes.dart';
 import 'package:store_app/features/login/prefs.dart';
-import 'package:store_app/features/login/views/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +15,12 @@ class StoreApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: "Store App", home: LoginScreen());
+    return MaterialApp(
+      title: "Store App",
+      initialRoute: CacheHelper.getData("AccessToken") != null
+          ? Routes.homeScreen
+          : Routes.loginScreen,
+      onGenerateRoute: AppRouter().generateRoute,
+    );
   }
 }

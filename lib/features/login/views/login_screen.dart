@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:store_app/core/app_images.dart';
+import 'package:store_app/core/routing/routes.dart';
 import 'package:store_app/features/home/views/home_screen.dart';
 import 'package:store_app/features/login/cubit/login_cubit.dart';
 import 'package:store_app/features/login/cubit/login_states.dart';
@@ -27,11 +28,7 @@ class LoginScreen extends StatelessWidget {
             if (state is LoginSuccessState) {
               usernameController.clear();
               passwordController.clear();
-              final String name = state.user.firstName ?? "User";
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen(name: name)),
-              );
+              Navigator.pushNamed(context, Routes.homeScreen);
             } else if (state is LoginFailedState) {
               ScaffoldMessenger.of(
                 context,
