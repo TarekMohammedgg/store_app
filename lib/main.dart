@@ -7,20 +7,23 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CacheHelper.init();
 
-  runApp(const StoreApp());
+  runApp(StoreApp());
 }
 
 class StoreApp extends StatelessWidget {
-  const StoreApp({super.key});
+  StoreApp({super.key});
+
+  final _appRouter = AppRouter();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Store App",
+      debugShowCheckedModeBanner: false,
       initialRoute: CacheHelper.getData("AccessToken") != null
           ? Routes.homeScreen
           : Routes.loginScreen,
-      onGenerateRoute: AppRouter().generateRoute,
+      onGenerateRoute: _appRouter.generateRoute,
     );
   }
 }

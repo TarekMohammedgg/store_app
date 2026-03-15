@@ -124,7 +124,9 @@ class LoginScreen extends StatelessWidget {
                                     EdgeInsetsGeometry.all(0),
                                   ),
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.pushNamed(context, Routes.signupScreen);
+                                },
                                 child: Text("Sign Up"),
                               ),
                             ],

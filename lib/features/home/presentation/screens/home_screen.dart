@@ -5,6 +5,8 @@ import 'package:store_app/features/home/presentation/cubit/home_cubit.dart';
 import 'package:store_app/features/home/presentation/cubit/home_states.dart';
 import 'package:store_app/core/routing/routes.dart';
 import 'package:store_app/features/home/presentation/screens/widgets/product_item.dart';
+import 'package:store_app/features/my_cart/presentation/cubit/cart_cubit.dart';
+import 'package:store_app/features/my_cart/presentation/cubit/cart_states.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -14,11 +16,23 @@ class HomeScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => HomeCubit(HomeRepo())..getAllProducts(),
       child: Scaffold(
+        backgroundColor: Colors.grey.shade100,
         appBar: AppBar(
-          title: Text("Store"),
+          title: Text(
+            "Store",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
+          elevation: 0,
           actions: [
             IconButton(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.shopping_cart_outlined),
+              onPressed: () {
+                Navigator.pushNamed(context, Routes.myCartScreen);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.person_outline),
               onPressed: () {
                 Navigator.pushNamed(context, Routes.profileScreen);
               },
@@ -34,17 +48,39 @@ class HomeScreen extends StatelessWidget {
               return Center(child: Text(state.message));
             }
             if (state is HomeSuccess) {
-              return GridView.builder(
-                padding: EdgeInsets.all(10),
-                itemCount: state.products.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  mainAxisExtent: 240,
-                ),
-                itemBuilder: (context, index) =>
-                    ProductItem(product: state.products[index]),
+              return BlocBuilder<CartCubit, CartStates>(
+                builder: (context, cartState) {
+                  final cartItems = cartState is CartUpdated
+                      ? cartState.items
+                      : [];
+                  return GridView.builder(
+                    padding: EdgeInsets.all(14),
+                    itemCount: state.products.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 14,
+                      mainAxisSpacing: 14,
+                      mainAxisExtent: 260,
+                    ),
+                    itemBuilder: (context, index) {
+                      final product = state.products[index];
+                      final isInCart = cartItems.any((p) => p.id == product.id);
+                      return ProductItem(
+                        product: product,
+                        isInCart: isInCart,
+                        onAddToCart: () {
+                          context.read<CartCubit>().addToCart(product);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("${product.title} added to cart"),
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
               );
             }
             return SizedBox.shrink();
